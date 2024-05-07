@@ -108,7 +108,7 @@ describe('Health Api', () => {
       const result = await api.features.health.getFrame(query);
       expect(result?.length).toEqual(1);
       expect(result[0].fields.length).toEqual(3);
-      expect(result[0].fields[0].values.toArray()).toEqual(['978237e7cb']);
+      expect(result[0].fields[0].values).toEqual(['978237e7cb']);
     });
 
     it('Should handle getHealthFrame request with no data', async () => {

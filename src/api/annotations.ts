@@ -1,4 +1,13 @@
-import { FieldType, formatLabels, Labels, MutableDataFrame, ScopedVars, TimeRange } from '@grafana/data';
+import {
+  createDataFrame,
+  DataFrame,
+  FieldType,
+  formatLabels,
+  Labels,
+  ScopedVars,
+  TimeRange,
+  toDataFrame,
+} from '@grafana/data';
 import { getBackendSrv, getTemplateSrv } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
@@ -115,7 +124,7 @@ export class Annotations extends BaseApi {
     range: TimeRange,
     dashboardUid: string | undefined,
     scopedVars: ScopedVars
-  ): Promise<MutableDataFrame[]> => {
+  ): Promise<DataFrame[]> => {
     const annotations = await this.getAll(query, range, dashboardUid, scopedVars);
     if (!annotations.length) {
       return [];
@@ -217,16 +226,16 @@ export class Annotations extends BaseApi {
     /**
      * Create frame
      */
-    const frame = new MutableDataFrame({
+    let frame = createDataFrame({
       name: RequestType.ANNOTATIONS,
       refId: query.refId,
       fields,
     });
 
     /**
-     * Add Data
+     * Fields for data
      */
-    annotations.forEach((annotation) => {
+    const frameFields = annotations.map((annotation) => {
       let formattedLabels = '{}';
       let formattedValues = '';
       const text = annotation.text?.match(/{([^}]+)} - ([^}]*)/);
@@ -256,7 +265,6 @@ export class Annotations extends BaseApi {
       if (text?.length && text[2]) {
         formattedValues = text[2];
       }
-
       const row = [
         annotation.id,
         annotation.alertId,
@@ -283,10 +291,21 @@ export class Annotations extends BaseApi {
 
         row.push(alertTitle, alertUid);
       }
-
-      frame.appendRow(row);
+      return row;
     });
 
-    return [frame];
+    /**
+     * Add Data
+     */
+    frame = {
+      ...frame,
+      fields: frame.fields.map((field, fieldIndex) => ({
+        ...field,
+        values: frameFields.map((dataField) => dataField[fieldIndex]),
+      })),
+      length: frameFields.length,
+    };
+
+    return [toDataFrame(frame)];
   };
 }

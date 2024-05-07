@@ -218,7 +218,7 @@ describe('Annotations Api', () => {
       const result = await api.features.annotations.getFrame(query, range, '', {});
       expect(result?.length).toEqual(1);
       expect(result[0].fields.length).toEqual(16);
-      expect(result[0].fields[0].values.toArray()).toEqual([5]);
+      expect(result[0].fields[0].values).toEqual([5]);
     });
 
     it('Should handle getAnnotationsFrame request with no data', async () => {

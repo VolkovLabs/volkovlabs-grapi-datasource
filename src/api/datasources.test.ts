@@ -144,7 +144,7 @@ describe('Data Sources Api', () => {
       const result = await api.features.datasources.getFrame(query);
       expect(result?.length).toEqual(1);
       expect(result[0].fields.length).toEqual(11);
-      expect(result[0].fields[0].values.toArray()).toEqual([1, 2]);
+      expect(result[0].fields[0].values).toEqual([1, 2]);
     });
 
     it('Should handle getDataSourcesFrame request with no data', async () => {

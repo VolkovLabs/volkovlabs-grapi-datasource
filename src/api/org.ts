@@ -1,4 +1,4 @@
-import { MutableDataFrame, OrgProps } from '@grafana/data';
+import { DataFrame, OrgProps } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
@@ -64,7 +64,7 @@ export class Org extends BaseApi {
   /**
    * Get Users Frame
    */
-  getUsersFrame = async (query: Query): Promise<MutableDataFrame[]> => {
+  getUsersFrame = async (query: Query): Promise<DataFrame[]> => {
     const items = await this.getUsers();
     if (!items.length) {
       return [];

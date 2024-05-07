@@ -1,4 +1,4 @@
-import { DataSourceSettings, FieldType, MutableDataFrame } from '@grafana/data';
+import { DataFrame, DataSourceSettings, FieldType } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
@@ -39,7 +39,7 @@ export class DataSources extends BaseApi {
   /**
    * Get Data Sources Frame
    */
-  getFrame = async (query: Query): Promise<MutableDataFrame[]> => {
+  getFrame = async (query: Query): Promise<DataFrame[]> => {
     const datasources = await this.getAll();
     if (!datasources.length) {
       return [];

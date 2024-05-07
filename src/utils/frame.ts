@@ -1,4 +1,4 @@
-import { FieldType, getFieldTypeFromValue, MutableDataFrame } from '@grafana/data';
+import { createDataFrame, DataFrame, FieldType, getFieldTypeFromValue, toDataFrame } from '@grafana/data';
 
 /**
  * Field Mapper
@@ -26,11 +26,11 @@ export const convertToFrame = <TItem>({
   refId: string;
   fields: Array<FieldMapper<TItem>>;
   items: TItem[];
-}): MutableDataFrame => {
+}): DataFrame => {
   /**
    * Create frame
    */
-  const frame = new MutableDataFrame({
+  let frame = createDataFrame({
     name,
     refId,
     fields: fields.map(({ name, type }) => ({
@@ -40,13 +40,23 @@ export const convertToFrame = <TItem>({
   });
 
   /**
+   * Get Fields For Item
+   */
+  const dataFields = items.map((item) => [...fields.map(({ getValue }) => getValue(item))]);
+
+  /**
    * Add Data
    */
-  items.forEach((item) => {
-    frame.appendRow([...fields.map(({ getValue }) => getValue(item))]);
-  });
+  frame = {
+    ...frame,
+    fields: frame.fields.map((field, fieldIndex) => ({
+      ...field,
+      values: dataFields.map((dataField) => dataField[fieldIndex]),
+    })),
+    length: dataFields.length,
+  };
 
-  return frame;
+  return toDataFrame(frame);
 };
 
 /**

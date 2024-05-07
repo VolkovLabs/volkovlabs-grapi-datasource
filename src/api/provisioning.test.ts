@@ -270,7 +270,7 @@ describe('Provisioning Api', () => {
       const result = await api.features.provisioning.getAlertRulesFrame(query);
       expect(result?.length).toEqual(1);
       expect(result[0].fields.length).toEqual(9);
-      expect(result[0].fields[0].values.toArray()).toEqual([1]);
+      expect(result[0].fields[0].values).toEqual([1]);
     });
 
     it('Should handle getAlertRulesFrame request with no data', async () => {

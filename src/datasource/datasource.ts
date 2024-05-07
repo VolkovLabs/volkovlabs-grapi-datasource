@@ -4,7 +4,6 @@ import {
   DataQueryResponse,
   DataSourceApi,
   DataSourceInstanceSettings,
-  MutableDataFrame,
 } from '@grafana/data';
 
 import { Api } from '../api';
@@ -112,7 +111,7 @@ export class DataSource extends DataSourceApi<Query, DataSourceOptions> {
      */
     await Promise.all(
       options.targets.map(async (target) => {
-        let frames: MutableDataFrame[] = [];
+        let frames: DataFrame[] = [];
 
         /**
          * Request Types

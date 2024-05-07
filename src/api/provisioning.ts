@@ -1,4 +1,4 @@
-import { FieldType, MutableDataFrame } from '@grafana/data';
+import { DataFrame, FieldType } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { lastValueFrom } from 'rxjs';
 
@@ -44,7 +44,7 @@ export class Provisioning extends BaseApi {
   /**
    * Get Alert Rules Frame
    */
-  getAlertRulesFrame = async (query: Query): Promise<MutableDataFrame[]> => {
+  getAlertRulesFrame = async (query: Query): Promise<DataFrame[]> => {
     const rules = await this.getAlertRules();
     if (!rules.length) {
       return [];
